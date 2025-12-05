@@ -14,7 +14,8 @@
 # limitations under the License.
 
 import streamlit as st
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+import uuid
 
 st.set_page_config(page_title="To-do list", page_icon=":memo:")
 
@@ -26,6 +27,7 @@ state = st.session_state
 class Todo:
     text: str
     is_done = False
+    uid: uuid.UUID = field(default_factory=uuid.uuid4)
 
 
 if "todos" not in state:
@@ -88,13 +90,14 @@ if state.todos:
                     width="stretch",
                     on_change=check_todo,
                     args=[i, not todo.is_done],
+                    key=f"todo-chk-{todo.uid}",
                 )
                 st.button(
                     ":material/delete:",
                     type="tertiary",
-                    key=f"delete_{i}",
                     on_click=remove_todo,
                     args=[i],
+                    key=f"delete_{i}",
                 )
 
     with st.container(horizontal=True, horizontal_alignment="center"):
